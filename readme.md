@@ -1,4 +1,4 @@
-![](assets/20240212_214800_uler.png)
+![demo](./assets/20240213_001700_demo.png)
 
 ### Instalasi
 
