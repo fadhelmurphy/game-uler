@@ -3,18 +3,14 @@ const prompt = require('prompt-sync')();
 const BOARD_WIDTH = 20;
 const BOARD_HEIGHT = 20;
 const SNAKE_SIZE = 3;
-// const APPLE_SIZE = 1;
 
-// let board = [];
 let snake = [];
 let apple = [];
 let direction = 'right';
 let score = 0;
-let isPlaying = false;
-let playerName = '';
+let isPlaying = true;
 
 const init = () => {
-  board = Array(BOARD_HEIGHT).fill(null).map(() => Array(BOARD_WIDTH).fill(0));
   snake = [{ x: Math.floor(BOARD_WIDTH / 2), y: Math.floor(BOARD_HEIGHT / 2) }];
   for (let i = 1; i <= SNAKE_SIZE - 1; i++) {
     snake.push({ x: snake[0].x - i, y: snake[0].y });
@@ -43,50 +39,39 @@ const isColliding = (object) => {
 }
 
 const draw = () => {
-  
   process.stdout.write('\x1bc');
 
-  if (!isPlaying) {
-    process.stdout.write('=================== Build from scratch by Fadhel Murphy =================== \n\n');
-    process.stdout.write('Selamat datang di Game uler ala Nokia! Silahkan pilih:\n');
-    process.stdout.write('1. Mulai Game\n');
-    process.stdout.write('2. Keluar\n');
-  } else {
-    for (let y = 0; y < BOARD_HEIGHT; y++) {
-      for (let x = 0; x < BOARD_WIDTH; x++) {
-        let char = ' ';
-        // Draw horizontal lines
-        if (y === 0) {
-          char = '‾';
-        }
-        if (y === BOARD_HEIGHT - 1) {
-          char = '_';
-        }
-        // Draw vertical lines
-        if (x === 0) {
-          char = '▏';
-        }
-        if (x === BOARD_WIDTH - 1) {
-          char = '▕';
-        }
-        // Draw snake and apple
-        if (snake.some((segment) => segment.x === x && segment.y === y)) {
-          if (snake[0].x === x && snake[0].y === y) {
-            char = '\x1b[31mo\x1b[0m'; // Red head
-          } else {
-            char = 'o';
-          }
-        } else if (apple.x === x && apple.y === y) {
-          char = '@';
-        }
-        process.stdout.write(char);
+  for (let y = 0; y < BOARD_HEIGHT; y++) {
+    for (let x = 0; x < BOARD_WIDTH; x++) {
+      let char = ' ';
+
+      if (y === 0) {
+        char = '‾';
       }
-      process.stdout.write('\n');
+      if (y === BOARD_HEIGHT - 1) {
+        char = '_';
+      }
+      if (x === 0) {
+        char = '▏';
+      }
+      if (x === BOARD_WIDTH - 1) {
+        char = '▕';
+      }
+      if (snake.some((segment) => segment.x === x && segment.y === y)) {
+        if (snake[0].x === x && snake[0].y === y) {
+          char = '\x1b[31mo\x1b[0m'; // Red head
+        } else {
+          char = 'o';
+        }
+      } else if (apple.x === x && apple.y === y) {
+        char = '@';
+      }
+      process.stdout.write(char);
     }
-  
-    process.stdout.write(`Nama Pemain: ${playerName}\n`);
-    process.stdout.write(`Score: ${score}\n`);
+    process.stdout.write('\n');
   }
+
+  console.log(`Score: ${score}`);
 }
 
 const update = () => {
@@ -138,42 +123,24 @@ const gameOver = () => {
 }
 
 const handleKey = () => {
-  if (!isPlaying) {
-    let choice = prompt('Pilih: ');
-    if (choice === '1') {
-      playerName = prompt('Masukkan nama pemain: ');
-      if (playerName.length > 0) {
-        isPlaying = true;
-        update();
-      } else {
-        console.log('Nama pemain tidak boleh kosong!');
-      }
-    } else if (choice === '2') {
-      console.log('Terima kasih telah bermain!');
-      process.exit();
-    } else {
-      console.log('Pilihan tidak valid!');
-    }
+  const key = prompt('Tekan tombol (W/A/S/D) untuk bergerak dan Q untuk keluar : ');
+  if (key.toLowerCase() === 'q') {
+    console.log('Terima kasih telah bermain!');
+    process.exit();
   } else {
-    const key = prompt('Tekan tombol WASD untuk bergerak dan Q untuk kembali ke menu : ');
-    if (key.toLowerCase() === 'q') {
-      isPlaying = false;
-      draw();
-    } else {
-      const newDirection = {
-        w: 'up',
-        s: 'down',
-        a: 'left',
-        d: 'right',
-      }[key.toLowerCase()];
+    const newDirection = {
+      w: 'up',
+      s: 'down',
+      a: 'left',
+      d: 'right',
+    }[key.toLowerCase()];
 
-      if (newDirection && newDirection !== direction) {
-        direction = newDirection;
-      }
+    if (newDirection && newDirection !== direction) {
+      direction = newDirection;
     }
   }
 }
 
 init();
 setInterval(update, 100);
-setInterval(handleKey, 100); // Check for input every 100ms
+setInterval(handleKey, 100);
