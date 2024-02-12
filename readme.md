@@ -1,3 +1,5 @@
+![](assets/20240212_214800_uler.png)
+
 ### Instalasi
 
 1. Pastikan Anda memiliki Node.js versi 16.0.0 atau lebih tinggi terinstal di komputer Anda. Anda dapat mengunduhnya dari[https://nodejs.org/en/](https://nodejs.org/en/).
